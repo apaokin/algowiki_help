@@ -1,0 +1,74 @@
+server {
+    error_log  /var/log/nginx/nginx_error.log;
+    listen 8000;
+    root /var/www/algowiki/;
+    index index.php;
+    autoindex off;
+    client_max_body_size 5m;
+    client_body_timeout 60;
+    location /ru {
+#        try_files $uri;
+         try_files $uri $uri/ @rewrite;
+    }
+    location /en {
+#        try_files $uri;
+         try_files $uri $uri/ @rewrite2;
+
+    }
+
+    location /algowiki/en/ {
+        root /var/www/;
+        try_files $uri /images/404.html;
+
+    }
+
+    location /algowiki/pool/ {
+        root /var/www/;
+        try_files $uri /images/404.html;
+#         try_files $uri $uri/ @rewrite2;
+
+    }
+
+    location @rewrite2 {
+        rewrite ^/(.*)$ /en/index.php?title=$1&$args;
+    }
+
+    rewrite ^/wiki(.*)$ /pool$1 last;
+
+    location @rewrite {
+        rewrite ^/(.*)$ /ru/index.php?title=$1&$args;
+    }
+
+    location ^~ /maintenance/ {
+        return 403;
+    }
+
+    location ~ \.php$ {
+        fastcgi_param REMOTE_ADDR '100.0.0.0';
+        include fastcgi_params;
+        #fastcgi_index index.php;
+        fastcgi_param  SCRIPT_FILENAME   $document_root$fastcgi_script_name;
+        fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+        include snippets/fastcgi-php.conf;
+}
+
+#    location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
+#       try_files $uri /index.php;
+#        expires max;
+#        log_not_found off;
+#    }
+
+#    location = /_.gif {
+#        expires max;
+#        empty_gif;
+#    }
+
+    location ^~ /cache/ {
+        deny all;
+    }
+
+    location /dumps {
+        root /var/www/mediawiki/local;
+        autoindex on;
+    }
+}
