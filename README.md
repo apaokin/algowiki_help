@@ -33,9 +33,12 @@
 
 Правим  nginx(/etc/nginx/sites-available/default), добавляя блок server из файла в этом репозитории.
 
-Важно прописать актуальный сокет из пакета php-fpm здесь:ssh d,bnm
+Важно прописать актуальный сокет из пакета php-fpm здесь:
 
 	fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+
+Чтобы изменения вступили в силу, перезапустим nginx:
+	sudo service nginx restart
 
 Создаем в mysql пользователя algo и даём ему пароль(здесь он будет your_password):
 
