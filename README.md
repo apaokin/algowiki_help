@@ -70,4 +70,4 @@
 	$wgMainCacheType = CACHE_NONE; и $wgMainCacheType = CACHE_NONE;
 
 
-Коммиты и Issues reports приветcтвуются.
+Коммиты и Issues приветcтвуются.
